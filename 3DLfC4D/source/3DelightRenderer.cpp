@@ -1,7 +1,7 @@
 #include "c4d.h"
 #include "c4d_symbols.h"
 #include "myres.h"
-#include "3DlghtRenderer.h"
+#include "3DelightRenderer.h"
 #include <iostream>
 #include "DL_Render.h"
 #include "DL_SceneParser.h"

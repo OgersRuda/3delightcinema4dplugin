@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <map>
-#include "3DlghtRenderer.h"
+#include "3DelightRenderer.h"
 
 using namespace std;
 
