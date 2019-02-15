@@ -1,0 +1,15 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.10.0dev
+# options: 
+surface DefaultSurface
+global	normal	N	%read{0,0} %write{2147483647,-1}
+global	closure color	Ci	%read{2147483647,-1} %write{1,1}
+temp	closure color	$tmp1	%read{1,1} %write{0,0}
+const	string	$const1	"diffuse"		%read{0,0} %write{2147483647,-1}
+const	float	$const2	0.80000001		%read{1,1} %write{2147483647,-1}
+code ___main___
+# DefaultSurface.osl:2
+# 	 Ci =  0.8*diffuse(N);
+	closure		$tmp1 $const1 N 	%filename{"DefaultSurface.osl"} %line{2} %argrw{"wrr"}
+	mul		Ci $tmp1 $const2 	%argrw{"wrr"}
+	end

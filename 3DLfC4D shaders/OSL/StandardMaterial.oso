@@ -1,0 +1,390 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.10.0dev
+# options: 
+shader StandardMaterial
+param	int	coating_on	0		%read{48,48} %write{2147483647,-1}
+param	color	coating_color	1 1 1		%read{125,125} %write{2147483647,-1}
+param	float	coating_roughness	0.1		%read{120,120} %write{2147483647,-1}
+param	float	coating_fresnel_reflectance	0.1		%read{51,55} %write{2147483647,-1}
+param	color	diffuse_color	1 1 1		%read{3,3} %write{2147483647,-1}
+param	float	diffuse_weight	0.80000001		%read{3,3} %write{2147483647,-1}
+param	float	diffuse_roughness	0		%read{2,2} %write{2147483647,-1}
+param	color	specular_color	1 1 1		%read{39,39} %write{2147483647,-1}
+param	float	specular_weight	0.2		%read{39,39} %write{2147483647,-1}
+param	float	specular_roughness	0.1		%read{14,15} %write{2147483647,-1}
+param	float	specular_fresnel_reflectance	1		%read{6,10} %write{2147483647,-1}
+param	float	specular_anisotropy	0		%read{17,23} %write{2147483647,-1}
+param	color	anisotropy_direction	1 0 0		%read{30,34} %write{2147483647,-1}
+param	int	emission_on	0		%read{43,43} %write{2147483647,-1}
+param	float	emission_weight	1		%read{45,45} %write{2147483647,-1}
+param	color	emission_color	1 1 1		%read{44,44} %write{2147483647,-1}
+oparam	float	f_out	0		%read{2147483647,-1} %write{2147483647,-1}
+oparam	color	c_out	0 0 0		%read{2147483647,-1} %write{2147483647,-1}
+oparam	closure color	bsdf_out			%read{41,121} %write{4,126}
+global	vector	I	%read{1,1} %write{2147483647,-1}
+global	normal	N	%read{0,124} %write{2147483647,-1}
+local	float	___235_IdotN	%read{103,111} %write{101,101}
+local	float	___235_k	%read{107,112} %write{106,106}
+local	float	___236_c	%read{63,91} %write{62,65}
+local	float	___236_g	%read{77,91} %write{76,79}
+local	float	___238_beta	%read{84,92} %write{80,80}
+local	float	___238_F	%read{88,96} %write{86,95}
+local	vector	___240_R	%read{2147483647,-1} %write{70,70}
+local	vector	___240_T	%read{2147483647,-1} %write{109,119}
+local	float	___321_T	%read{11,57} %write{10,55}
+local	vector	Nn	%read{62,114} %write{0,0}
+local	vector	In	%read{62,110} %write{1,1}
+local	float	specular_eta	%read{38,38} %write{8,13}
+local	float	xalpha	%read{26,38} %write{14,28}
+local	float	yalpha	%read{27,38} %write{15,29}
+local	float	anisotropy	%read{25,27} %write{16,25}
+local	float	u_x	%read{36,36} %write{31,31}
+local	float	u_y	%read{36,36} %write{33,33}
+local	float	u_z	%read{36,36} %write{35,35}
+local	vector	U	%read{37,38} %write{36,37}
+local	float	___326_coating_eta	%read{59,124} %write{53,58}
+local	float	___326_Kr	%read{97,97} %write{96,117}
+local	float	___326_Kt	%read{121,121} %write{99,118}
+local	float	___326_coating_alpha	%read{122,122} %write{120,120}
+temp	closure color	$tmp1	%read{4,4} %write{2,2}
+const	string	$const1	"oren_nayar"		%read{2,2} %write{2147483647,-1}
+temp	color	$tmp2	%read{4,4} %write{3,3}
+const	string	$const2	"eta_from_intensity"		%read{5,50} %write{2147483647,-1}
+const	int	$const3	1		%read{6,51} %write{2147483647,-1}
+temp	int	$tmp3	%read{7,7} %write{6,6}
+const	int	$const4	500		%read{8,53} %write{2147483647,-1}
+temp	float	$tmp4	%read{13,13} %write{11,11}
+const	float	$const5	1		%read{11,117} %write{2147483647,-1}
+temp	float	$tmp5	%read{13,13} %write{12,12}
+const	float	$const6	1.5		%read{14,122} %write{2147483647,-1}
+const	int	$const7	0		%read{17,124} %write{2147483647,-1}
+temp	int	$tmp6	%read{18,18} %write{17,17}
+const	float	$const8	0.75		%read{20,20} %write{2147483647,-1}
+temp	float	$tmp7	%read{20,20} %write{19,19}
+temp	float	$tmp8	%read{21,21} %write{20,20}
+temp	float	$tmp9	%read{22,22} %write{21,21}
+temp	int	$tmp10	%read{24,24} %write{23,23}
+const	float	$const9	0.001		%read{28,120} %write{2147483647,-1}
+temp	float	$tmp11	%read{31,31} %write{30,30}
+const	float	$const10	0.5		%read{31,90} %write{2147483647,-1}
+temp	float	$tmp12	%read{33,33} %write{32,32}
+const	int	$const11	2		%read{34,34} %write{2147483647,-1}
+temp	float	$tmp13	%read{35,35} %write{34,34}
+const	string	$const12	"object"		%read{36,36} %write{2147483647,-1}
+temp	closure color	$tmp14	%read{40,40} %write{38,38}
+const	string	$const13	"cooktorrance"		%read{38,124} %write{2147483647,-1}
+const	string	$const14	"microfacet"		%read{38,124} %write{2147483647,-1}
+temp	color	$tmp15	%read{40,40} %write{39,39}
+temp	closure color	$tmp16	%read{41,41} %write{40,40}
+temp	closure color	$tmp17	%read{46,46} %write{42,42}
+const	string	$const15	"emission"		%read{42,42} %write{2147483647,-1}
+temp	color	$tmp18	%read{45,45} %write{44,44}
+temp	color	$tmp19	%read{44,44} %write{43,43}
+temp	color	$tmp20	%read{46,46} %write{45,45}
+temp	closure color	$tmp21	%read{47,47} %write{46,46}
+temp	int	$tmp22	%read{49,49} %write{48,48}
+temp	int	$tmp23	%read{52,52} %write{51,51}
+temp	float	$tmp24	%read{58,58} %write{56,56}
+temp	float	$tmp25	%read{58,58} %write{57,57}
+temp	float	$tmp26	%read{72,111} %write{59,59}
+const	string	$const16	"fresnel"		%read{60,61} %write{2147483647,-1}
+temp	int	$tmp27	%read{64,64} %write{63,63}
+const	string	$const17	"reflect"		%read{66,66} %write{2147483647,-1}
+temp	float	$tmp28	%read{68,68} %write{67,67}
+temp	float	$tmp29	%read{69,69} %write{68,68}
+const	float	$const18	2		%read{68,68} %write{2147483647,-1}
+temp	vector	$tmp30	%read{70,70} %write{69,69}
+temp	float	$tmp31	%read{73,73} %write{72,72}
+const	string	$const19	"sqr"		%read{71,93} %write{2147483647,-1}
+temp	float	$tmp32	%read{74,74} %write{73,73}
+temp	float	$tmp33	%read{76,76} %write{74,74}
+temp	float	$tmp34	%read{76,76} %write{75,75}
+const	float	$const20	0		%read{77,118} %write{2147483647,-1}
+temp	int	$tmp35	%read{78,78} %write{77,77}
+temp	float	$tmp36	%read{82,82} %write{81,81}
+temp	float	$tmp37	%read{83,83} %write{82,82}
+temp	float	$tmp38	%read{86,86} %write{83,83}
+temp	float	$tmp39	%read{85,85} %write{84,84}
+temp	float	$tmp40	%read{86,86} %write{85,85}
+temp	float	$tmp41	%read{89,89} %write{88,88}
+temp	float	$tmp42	%read{90,90} %write{89,89}
+temp	float	$tmp43	%read{95,95} %write{94,94}
+temp	float	$tmp44	%read{92,92} %write{91,91}
+temp	float	$tmp45	%read{94,94} %write{92,92}
+temp	float	$tmp46	%read{98,98} %write{97,97}
+temp	float	$tmp47	%read{99,99} %write{98,98}
+const	string	$const21	"refract"		%read{100,100} %write{2147483647,-1}
+temp	float	$tmp48	%read{105,105} %write{102,102}
+temp	float	$tmp49	%read{104,104} %write{103,103}
+temp	float	$tmp50	%read{105,105} %write{104,104}
+temp	float	$tmp51	%read{106,106} %write{105,105}
+temp	int	$tmp52	%read{108,108} %write{107,107}
+const	vector	$const22	0 0 0		%read{109,124} %write{2147483647,-1}
+temp	vector	$tmp53	%read{115,115} %write{110,110}
+temp	float	$tmp54	%read{113,113} %write{111,111}
+temp	float	$tmp55	%read{113,113} %write{112,112}
+temp	float	$tmp56	%read{114,114} %write{113,113}
+temp	vector	$tmp57	%read{115,115} %write{114,114}
+temp	closure color	$tmp58	%read{126,126} %write{121,121}
+temp	closure color	$tmp59	%read{125,125} %write{124,124}
+temp	float	$tmp60	%read{124,124} %write{122,122}
+temp	closure color	$tmp62	%read{126,126} %write{125,125}
+code ___main___
+# StandardMaterial.osl:47
+# 	vector Nn=normalize(N);
+	normalize	Nn N 	%filename{"StandardMaterial.osl"} %line{47} %argrw{"wr"}
+# StandardMaterial.osl:48
+# 	vector In=normalize(I);
+	normalize	In I 	%line{48} %argrw{"wr"}
+# StandardMaterial.osl:51
+# 	bsdf_out=diffuse_color*diffuse_weight*oren_nayar(N, diffuse_roughness);
+	closure		$tmp1 $const1 N diffuse_roughness 	%line{51} %argrw{"wrrr"}
+	mul		$tmp2 diffuse_color diffuse_weight 	%argrw{"wrr"}
+	mul		bsdf_out $tmp1 $tmp2 	%argrw{"wrr"}
+# StandardMaterial.osl:54
+# 	float specular_eta=eta_from_intensity(specular_fresnel_reflectance);
+	functioncall	$const2 14 	%line{54} %argrw{"r"}
+# StandardMaterial.osl:9
+# 	if( x >= 1 )
+	ge		$tmp3 specular_fresnel_reflectance $const3 	%line{9} %argrw{"wrr"}
+	if		$tmp3 10 10 	%argrw{"r"}
+# StandardMaterial.osl:12
+# 		return 500;
+	assign		specular_eta $const4 	%line{12} %argrw{"wr"}
+	return
+# StandardMaterial.osl:15
+# 	float T = sqrt( x );
+	sqrt		___321_T specular_fresnel_reflectance 	%line{15} %argrw{"wr"}
+# StandardMaterial.osl:16
+# 	return (T+1) / (1-T);
+	add		$tmp4 ___321_T $const5 	%line{16} %argrw{"wrr"}
+	sub		$tmp5 $const5 ___321_T 	%argrw{"wrr"}
+	div		specular_eta $tmp4 $tmp5 	%argrw{"wrr"}
+# StandardMaterial.osl:55
+# 	float xalpha=pow(specular_roughness,1.5);
+	pow		xalpha specular_roughness $const6 	%line{55} %argrw{"wrr"}
+# StandardMaterial.osl:56
+# 	float yalpha=pow(specular_roughness,1.5);
+	pow		yalpha specular_roughness $const6 	%line{56} %argrw{"wrr"}
+# StandardMaterial.osl:57
+# 	float anisotropy=1;
+	assign		anisotropy $const3 	%line{57} %argrw{"wr"}
+# StandardMaterial.osl:58
+# 	if(specular_anisotropy!=0){
+	neq		$tmp6 specular_anisotropy $const7 	%line{58} %argrw{"wrr"}
+	if		$tmp6 26 26 	%argrw{"r"}
+# StandardMaterial.osl:59
+# 		anisotropy=1/(1+0.75*abs(specular_anisotropy));
+	abs		$tmp7 specular_anisotropy 	%line{59} %argrw{"wr"}
+	mul		$tmp8 $const8 $tmp7 	%argrw{"wrr"}
+	add		$tmp9 $const5 $tmp8 	%argrw{"wrr"}
+	div		anisotropy $const5 $tmp9 	%argrw{"wrr"}
+# StandardMaterial.osl:60
+# 		if(specular_anisotropy<0){
+	lt		$tmp10 specular_anisotropy $const7 	%line{60} %argrw{"wrr"}
+	if		$tmp10 26 26 	%argrw{"r"}
+# StandardMaterial.osl:61
+# 			anisotropy=1/anisotropy;
+	div		anisotropy $const5 anisotropy 	%line{61} %argrw{"wrr"}
+# StandardMaterial.osl:64
+# 	xalpha=xalpha*anisotropy;
+	mul		xalpha xalpha anisotropy 	%line{64} %argrw{"wrr"}
+# StandardMaterial.osl:65
+# 	yalpha=yalpha/anisotropy;
+	div		yalpha yalpha anisotropy 	%line{65} %argrw{"wrr"}
+# StandardMaterial.osl:66
+# 	xalpha=max(xalpha,0.001);
+	max		xalpha xalpha $const9 	%line{66} %argrw{"wrr"}
+# StandardMaterial.osl:67
+# 	yalpha=max(yalpha,0.001);
+	max		yalpha yalpha $const9 	%line{67} %argrw{"wrr"}
+# StandardMaterial.osl:68
+# 	float u_x=anisotropy_direction[0]-0.5;
+	compref		$tmp11 anisotropy_direction $const7 	%line{68} %argrw{"wrr"}
+	sub		u_x $tmp11 $const10 	%argrw{"wrr"}
+# StandardMaterial.osl:69
+# 	float u_y=anisotropy_direction[1]-0.5;
+	compref		$tmp12 anisotropy_direction $const3 	%line{69} %argrw{"wrr"}
+	sub		u_y $tmp12 $const10 	%argrw{"wrr"}
+# StandardMaterial.osl:70
+# 	float u_z=anisotropy_direction[2]-0.5;
+	compref		$tmp13 anisotropy_direction $const11 	%line{70} %argrw{"wrr"}
+	sub		u_z $tmp13 $const10 	%argrw{"wrr"}
+# StandardMaterial.osl:72
+# 	vector U=vector("object", u_x,u_y,u_z); 	
+	vector		U $const12 u_x u_y u_z 	%line{72} %argrw{"wrrrr"}
+# StandardMaterial.osl:73
+# 	U=normalize(U);
+	normalize	U U 	%line{73} %argrw{"wr"}
+# StandardMaterial.osl:74
+# 	bsdf_out+=specular_color*specular_weight*microfacet("cooktorrance", N,U, xalpha,yalpha, specular_eta, 0);
+	closure		$tmp14 $const14 $const13 N U xalpha yalpha specular_eta $const7 	%line{74} %argrw{"wrrrrrrrr"}
+	mul		$tmp15 specular_color specular_weight 	%argrw{"wrr"}
+	mul		$tmp16 $tmp14 $tmp15 	%argrw{"wrr"}
+	add		bsdf_out bsdf_out $tmp16 	%argrw{"wrr"}
+# StandardMaterial.osl:77
+# 	bsdf_out+=emission_on*emission_color*emission_weight*emission();
+	closure		$tmp17 $const15 	%line{77} %argrw{"wr"}
+	assign		$tmp19 emission_on 	%argrw{"wr"}
+	mul		$tmp18 $tmp19 emission_color 	%argrw{"wrr"}
+	mul		$tmp20 $tmp18 emission_weight 	%argrw{"wrr"}
+	mul		$tmp21 $tmp17 $tmp20 	%argrw{"wrr"}
+	add		bsdf_out bsdf_out $tmp21 	%argrw{"wrr"}
+# StandardMaterial.osl:80
+# 	if(coating_on==1){
+	eq		$tmp22 coating_on $const3 	%line{80} %argrw{"wrr"}
+	if		$tmp22 127 127 	%argrw{"r"}
+# StandardMaterial.osl:82
+# 		float coating_eta=eta_from_intensity(coating_fresnel_reflectance);
+	functioncall	$const2 59 	%line{82} %argrw{"r"}
+# StandardMaterial.osl:9
+# 	if( x >= 1 )
+	ge		$tmp23 coating_fresnel_reflectance $const3 	%line{9} %argrw{"wrr"}
+	if		$tmp23 55 55 	%argrw{"r"}
+# StandardMaterial.osl:12
+# 		return 500;
+	assign		___326_coating_eta $const4 	%line{12} %argrw{"wr"}
+	return
+# StandardMaterial.osl:15
+# 	float T = sqrt( x );
+	sqrt		___321_T coating_fresnel_reflectance 	%line{15} %argrw{"wr"}
+# StandardMaterial.osl:16
+# 	return (T+1) / (1-T);
+	add		$tmp24 ___321_T $const5 	%line{16} %argrw{"wrr"}
+	sub		$tmp25 $const5 ___321_T 	%argrw{"wrr"}
+	div		___326_coating_eta $tmp24 $tmp25 	%argrw{"wrr"}
+# StandardMaterial.osl:85
+# 		fresnel (In, Nn, 1/coating_eta,Kr, Kt);
+	div		$tmp26 $const5 ___326_coating_eta 	%line{85} %argrw{"wrr"}
+	functioncall	$const16 120 	%argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:273
+#     fresnel(I, N, eta, Kr, Kt, R, T);
+	functioncall	$const16 120 	%filename{"C:/Program Files\3Delight\osl\stdosl.h"} %line{273} %argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:245
+#     float c = dot(I, N);
+	dot		___236_c In Nn 	%line{245} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:246
+#     if (c < 0)
+	lt		$tmp27 ___236_c $const7 	%line{246} %argrw{"wrr"}
+	if		$tmp27 66 66 	%argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:247
+#         c = -c;
+	neg		___236_c ___236_c 	%line{247} %argrw{"wr"}
+# C:/Program Files\3Delight\osl\stdosl.h:248
+#     R = reflect(I, N);
+	functioncall	$const17 71 	%line{248} %argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:234
+# vector reflect (vector I, vector N) { return I - 2*dot(N,I)*N; }
+	dot		$tmp28 Nn In 	%line{234} %argrw{"wrr"}
+	mul		$tmp29 $const18 $tmp28 	%argrw{"wrr"}
+	mul		$tmp30 $tmp29 Nn 	%argrw{"wrr"}
+	sub		___240_R In $tmp30 	%argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:249
+#     float g = 1.0 / sqr(eta) - 1.0 + c * c;
+	functioncall	$const19 73 	%line{249} %argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:244
+#     float sqr(float x) { return x*x; }
+	mul		$tmp31 $tmp26 $tmp26 	%line{244} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:249
+#     float g = 1.0 / sqr(eta) - 1.0 + c * c;
+	div		$tmp32 $const5 $tmp31 	%line{249} %argrw{"wrr"}
+	sub		$tmp33 $tmp32 $const5 	%argrw{"wrr"}
+	mul		$tmp34 ___236_c ___236_c 	%argrw{"wrr"}
+	add		___236_g $tmp33 $tmp34 	%argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:250
+#     if (g >= 0.0) {
+	ge		$tmp35 ___236_g $const20 	%line{250} %argrw{"wrr"}
+	if		$tmp35 117 120 	%argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:251
+#         g = sqrt (g);
+	sqrt		___236_g ___236_g 	%line{251} %argrw{"wr"}
+# C:/Program Files\3Delight\osl\stdosl.h:252
+#         float beta = g - c;
+	sub		___238_beta ___236_g ___236_c 	%line{252} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:253
+#         float F = (c * (g+c) - 1.0) / (c * beta + 1.0);
+	add		$tmp36 ___236_g ___236_c 	%line{253} %argrw{"wrr"}
+	mul		$tmp37 ___236_c $tmp36 	%argrw{"wrr"}
+	sub		$tmp38 $tmp37 $const5 	%argrw{"wrr"}
+	mul		$tmp39 ___236_c ___238_beta 	%argrw{"wrr"}
+	add		$tmp40 $tmp39 $const5 	%argrw{"wrr"}
+	div		___238_F $tmp38 $tmp40 	%argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:254
+#         F = 0.5 * (1.0 + sqr(F));
+	functioncall	$const19 89 	%line{254} %argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:244
+#     float sqr(float x) { return x*x; }
+	mul		$tmp41 ___238_F ___238_F 	%line{244} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:254
+#         F = 0.5 * (1.0 + sqr(F));
+	add		$tmp42 $const5 $tmp41 	%line{254} %argrw{"wrr"}
+	mul		___238_F $const10 $tmp42 	%argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:255
+#         F *= sqr (beta / (g+c));
+	add		$tmp44 ___236_g ___236_c 	%line{255} %argrw{"wrr"}
+	div		$tmp45 ___238_beta $tmp44 	%argrw{"wrr"}
+	functioncall	$const19 95 	%argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:244
+#     float sqr(float x) { return x*x; }
+	mul		$tmp43 $tmp45 $tmp45 	%line{244} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:255
+#         F *= sqr (beta / (g+c));
+	mul		___238_F ___238_F $tmp43 	%line{255} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:256
+#         Kr = F;
+	assign		___326_Kr ___238_F 	%line{256} %argrw{"wr"}
+# C:/Program Files\3Delight\osl\stdosl.h:257
+#         Kt = (1.0 - Kr) * eta*eta;
+	sub		$tmp46 $const5 ___326_Kr 	%line{257} %argrw{"wrr"}
+	mul		$tmp47 $tmp46 $tmp26 	%argrw{"wrr"}
+	mul		___326_Kt $tmp47 $tmp26 	%argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:260
+#         T = refract(I, N, eta);
+	functioncall	$const21 117 	%line{260} %argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:236
+#     float IdotN = dot (I, N);
+	dot		___235_IdotN In Nn 	%line{236} %argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:237
+#     float k = 1 - eta*eta * (1 - IdotN*IdotN);
+	mul		$tmp48 $tmp26 $tmp26 	%line{237} %argrw{"wrr"}
+	mul		$tmp49 ___235_IdotN ___235_IdotN 	%argrw{"wrr"}
+	sub		$tmp50 $const5 $tmp49 	%argrw{"wrr"}
+	mul		$tmp51 $tmp48 $tmp50 	%argrw{"wrr"}
+	sub		___235_k $const5 $tmp51 	%argrw{"wrr"}
+# C:/Program Files\3Delight\osl\stdosl.h:238
+#     return (k < 0) ? vector(0,0,0) : (eta*I - N * (eta*IdotN + sqrt(k)));
+	lt		$tmp52 ___235_k $const7 	%line{238} %argrw{"wrr"}
+	if		$tmp52 110 116 	%argrw{"r"}
+	assign		___240_T $const22 	%argrw{"wr"}
+	mul		$tmp53 $tmp26 In 	%argrw{"wrr"}
+	mul		$tmp54 $tmp26 ___235_IdotN 	%argrw{"wrr"}
+	sqrt		$tmp55 ___235_k 	%argrw{"wr"}
+	add		$tmp56 $tmp54 $tmp55 	%argrw{"wrr"}
+	mul		$tmp57 Nn $tmp56 	%argrw{"wrr"}
+	sub		___240_T $tmp53 $tmp57 	%argrw{"wrr"}
+	return
+# C:/Program Files\3Delight\osl\stdosl.h:263
+#         Kr = 1.0;
+	assign		___326_Kr $const5 	%line{263} %argrw{"wr"}
+# C:/Program Files\3Delight\osl\stdosl.h:264
+#         Kt = 0.0;
+	assign		___326_Kt $const20 	%line{264} %argrw{"wr"}
+# C:/Program Files\3Delight\osl\stdosl.h:265
+#         T = vector (0,0,0);
+	assign		___240_T $const22 	%line{265} %argrw{"wr"}
+# StandardMaterial.osl:86
+# 		float coating_alpha=max(coating_roughness,0.001);
+	max		___326_coating_alpha coating_roughness $const9 	%filename{"StandardMaterial.osl"} %line{86} %argrw{"wrr"}
+# StandardMaterial.osl:88
+# 		bsdf_out=Kt*bsdf_out+coating_color*microfacet("cooktorrance", N, pow(coating_alpha,1.5), coating_eta, 0);
+	mul		$tmp58 bsdf_out ___326_Kt 	%line{88} %argrw{"wrr"}
+	pow		$tmp60 ___326_coating_alpha $const6 	%argrw{"wrr"}
+	functioncall	$const14 125 	%argrw{"r"}
+# C:/Program Files\3Delight\osl\stdosl.h:460
+#     return microfacet(distribution, N, vector(0), alpha, alpha, eta, refr);
+	closure		$tmp59 $const14 $const13 N $const22 $tmp60 $tmp60 ___326_coating_eta $const7 	%filename{"C:/Program Files\3Delight\osl\stdosl.h"} %line{460} %argrw{"wrrrrrrrr"}
+# StandardMaterial.osl:88
+# 		bsdf_out=Kt*bsdf_out+coating_color*microfacet("cooktorrance", N, pow(coating_alpha,1.5), coating_eta, 0);
+	mul		$tmp62 $tmp59 coating_color 	%filename{"StandardMaterial.osl"} %line{88} %argrw{"wrr"}
+	add		bsdf_out $tmp58 $tmp62 	%argrw{"wrr"}
+	end
