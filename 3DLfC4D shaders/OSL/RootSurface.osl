@@ -1,3 +1,0 @@
-surface RootSurface( closure color cl_in =0) {
-	Ci=cl_in;
-}
