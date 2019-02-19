@@ -4,6 +4,8 @@
 #include <vector>
 using namespace std;
 
+
+
 int GetUVIndex(int poly_index, float u, float v, map<int, vector<int> > & conmap, vector<float>& st, int& maxindex){
 	vector<int>& con = conmap[poly_index];
 	bool found = false;
@@ -47,7 +49,7 @@ PolygonObject* GetMeshFromNode(GeListNode* C4DNode){
 		mesh = (PolygonObject*)cache;
 	}
 
-	if (obj->GetType() != Opolygon && obj->GetType() != Oalembicgenerator) {
+	if (obj->GetType() != Opolygon && obj->GetType() != Oalembicgenerator && obj->GetType()!=Olight) {
 		ModelingCommandData mcd;
 		mcd.op = obj;
 		mcd.doc = obj->GetDocument();
@@ -56,6 +58,7 @@ PolygonObject* GetMeshFromNode(GeListNode* C4DNode){
 		mcd2.op = static_cast<BaseObject*>(mcd.result->GetIndex(0));
 		mesh = static_cast<PolygonObject*>(mcd2.op);
 	}
+
 	return mesh;
 }
 
@@ -68,7 +71,7 @@ void PolygonObjectTranslator::CreateNSINodes(const char* ParentTransformHandle, 
 	BaseObject* baseobject = (BaseObject*)C4DNode;
 	PolygonObject* object = GetMeshFromNode(C4DNode);
 
-	if (!object){
+	if (!object || object->GetType()==Olight){
 		skip = true;
 		return;
 	}

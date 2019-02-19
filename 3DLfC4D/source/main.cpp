@@ -25,7 +25,7 @@ Bool RegisterDL_CameraTag(void);
 Bool RegisterDL_MotionBlurTag(void);
 Bool RegisterDL_VisibilityTag(void);
 Bool Register3DelightPlugin(void);
-Bool RegisterCustomGUITest(void);
+Bool ShowLight(void);
 Bool RegisterCustomListView(void);
 
 Bool PluginStart(void)
@@ -37,6 +37,7 @@ Bool PluginStart(void)
 	if (!Register3DelightPlugin()) return FALSE;
 	//if (!RegisterInteractiveRenderManager())return FALSE;
 	if (!RegisterDisplay()) return FALSE;
+	if (!ShowLight()) return FALSE;
 	//if (!RegisterDL_CameraTag()) return FALSE;
 	//if (!RegisterDL_MotionBlurTag()) return FALSE;
 	if (!RegisterDL_VisibilityTag()) return FALSE;

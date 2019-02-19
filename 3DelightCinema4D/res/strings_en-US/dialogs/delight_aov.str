@@ -1,0 +1,10 @@
+DIALOGSTRINGS delight_aov
+{
+
+  DelightAovDialog "Delight AOV dialog";
+
+  DL_AOV_MAIN_GRP "Main";
+  DL_AOV_IMAGE_MENU   "Image Layers";
+  DL_ADD_IMAGE_LAYER "New Image Layer...";
+  DL_IDK "IDK";
+}

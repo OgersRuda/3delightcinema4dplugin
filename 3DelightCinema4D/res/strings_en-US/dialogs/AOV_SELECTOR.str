@@ -1,0 +1,12 @@
+// C4D-DialogResource
+
+DIALOGSTRINGS AOV_SELECTOR
+{
+	TDLG "AOV Selector";
+	Text1 "Shading Components";
+	Text2 "ADD";
+	Text3 "Auxiliary Variables";
+	Text4 "ADD";
+	Text5 "Image Layer (AOV)";
+	Text6 "Erase";
+}
