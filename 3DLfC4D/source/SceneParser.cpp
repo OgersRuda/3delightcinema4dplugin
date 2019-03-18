@@ -319,10 +319,12 @@ std::string SceneParser::GetIDString(BaseList2D* node){
 	const Char* mem;
 	node->FindUniqueID(MAXON_CREATOR_ID, mem,  memsize);
 	String ID_STR;
+	ID_STR.SetCString(mem,memsize);
 	ApplicationOutput(ID_STR);
-	ID_STR.SetCString(mem,memsize, STRINGENCODING::UTF8);
 	std::string result=StringToStdString(ID_STR);
+	ApplicationOutput(result.c_str());
 	return result;
+
 }
 
 const char* SceneParser::GetUniqueName(char* basename){

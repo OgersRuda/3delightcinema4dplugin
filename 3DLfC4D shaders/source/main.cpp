@@ -58,11 +58,11 @@ Bool PluginMessage(Int32 id, void *data)
 		pm->RegisterTranslator(ID_GLASSSHADER, AllocateTranslator<GlassShaderTranslator>);
 		pm->RegisterTranslator(ID_NORMALDISPLACEMENTSHADER, AllocateTranslator<NormalDisplacementTranslator>);
 		pm->RegisterTranslator(ID_RANGESHADER, AllocateTranslator<RangeTranslator>);
-		pm->RegisterTranslator(ID_DELIGHTMATERIAL, AllocateTranslator<DL_material_translator>);
 
 		//pm->RegisterTranslator(ID_TEXTURESHADER, AllocateTranslator<TextureShaderTranslator>);
 		pm->RegisterTranslator(Xbitmap, AllocateTranslator<TextureTranslator>);
 		pm->RegisterTranslator(Ttexture, AllocateTranslator<TextureTagTranslator>);
+		pm->RegisterTranslator(ID_DELIGHTMATERIAL, AllocateTranslator<DL_material_translator>);
 
 
 		break;

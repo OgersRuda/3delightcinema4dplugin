@@ -33,6 +33,7 @@ Bool PluginMessage(Int32 id, void *data)
 		pm->RegisterTranslator(Ocylinder, AllocateTranslator<PolygonObjectTranslator>);
 		pm->RegisterTranslator(Osphere, AllocateTranslator<PolygonObjectTranslator>);
 		pm->RegisterTranslator(Olight, AllocateTranslator<PolygonObjectTranslator>);
+		pm->RegisterTranslator(Odisc, AllocateTranslator<PolygonObjectTranslator>);
 
 		break;
 

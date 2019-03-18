@@ -30,22 +30,20 @@ inline vector<double> MatrixToNSIMatrix(Matrix m){
 }
 
 
-inline vector<char> StringToChars(String s){
-	long max= s.GetLength();
-	ApplicationOutput(String::IntToString(max));
-	vector<char> cstr(max+1);
-	s.GetCString(&cstr[0],max+1);
+inline vector<char> StringToChars(String s) {
+	long max = s.GetCStringLen();
+	vector<char> cstr(max + 1);
+	s.GetCString(&cstr[0], max + 1);
 	return cstr;
 }
 
-inline string StringToStdString(maxon::String s){
-	vector<char> chars=StringToChars(s);
+inline string StringToStdString(String s) {
+	vector<char> chars = StringToChars(s);
 	string result;
 	result.resize(chars.size());
-	for(int i=0; i<chars.size(); i++){
-		result[i]=chars[i];
+	for (int i = 0; i < chars.size(); i++) {
+		result[i] = chars[i];
 	}
 	return result;
 }
-
 #endif

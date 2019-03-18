@@ -40,6 +40,7 @@ void EnvironmentLightTranslator::CreateNSINodes(const char* ParentTransformHandl
 	ctx.Create(shader_handle, "shader");
 	ctx.Connect(shader_handle,"",attributes_handle,"surfaceshader");
 
+
 	Filename shaderpath=Filename(GeGetPluginPath()+Filename("OSL")+Filename("EnvLight.oso"));
 	vector<char> c_shaderpath =StringToChars(shaderpath.GetString());
 
